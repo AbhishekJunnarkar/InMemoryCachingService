@@ -6,16 +6,21 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 public class InMemoryCacheDaoImplementationTest {
 
+	@Rule
+	public TestName name = new TestName();
 	// This should go in before method
 	InMemoryCacheDaoImplementation impl;
 
 	@Before
 	public void setUp() {
 		impl = new InMemoryCacheDaoImplementation();
+		System.out.println("Test name is " + name.getMethodName());
 	}
 
 	@After
@@ -28,7 +33,7 @@ public class InMemoryCacheDaoImplementationTest {
 	@Test
 	public void WhenAddingNewTradeStoreNewValue() {
 		impl.fillPricingData("AAA", "A1", 20.0);
-		assertEquals(20.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(20.0, getPricingValue(), 0.0);
 
 	}
 
@@ -36,7 +41,7 @@ public class InMemoryCacheDaoImplementationTest {
 	public void WhenUpdatingExistingTradeStoreWhenPriceRecievedIsMoreThenPointOnePercent() {
 		impl.fillPricingData("AAA", "A1", 20.0);
 		impl.fillPricingData("AAA", "A1", 25.0);
-		assertEquals(25.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(25.0, getPricingValue(), 0.0);
 
 	}
 
@@ -44,7 +49,14 @@ public class InMemoryCacheDaoImplementationTest {
 	public void WhenUpdatingExistingTradeDoNotStoreWhenPriceRecievedIsLessThenPointOnePercent() {
 		impl.fillPricingData("AAA", "A1", 25);
 		impl.fillPricingData("AAA", "A1", 25.024);
-		assertEquals(25.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(25.0, getPricingValue(), 0.0);
+
+	}
+	@Test
+	public void WhenUpdatingExistingTradeDoNotStoreWhenPriceRecievedIsLessThenPointOnePercentTest2() {
+		impl.fillPricingData("AAA", "A1", 25);
+		impl.fillPricingData("AAA", "A1", 24.996);
+		assertEquals(25.0, getPricingValue(), 0.0);
 
 	}
 
@@ -52,7 +64,7 @@ public class InMemoryCacheDaoImplementationTest {
 	public void WhenAddingNewTradeWithDifferentSourceStoreNewValue() {
 		impl.fillPricingData("AAA", "A1", 25);
 		impl.fillPricingData("AAA", "A2", 80.0);
-		assertEquals(80.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(80.0, getPricingValue(), 0.0);
 	}
 
 	@Test
@@ -74,7 +86,7 @@ public class InMemoryCacheDaoImplementationTest {
 	@Test
 	public void WhenGettingPriceTheInMemoryCacheisEmpty() {
 
-		assertEquals(0.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(0.0, getPricingValue(), 0.0);
 	}
 
 	@Test
@@ -84,7 +96,7 @@ public class InMemoryCacheDaoImplementationTest {
 		impl.fillPricingData("AAA", "A2", 99);
 		impl.fillPricingData("AAA", "A3", 29);
 
-		assertEquals(99.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(99.0, getPricingValue(), 0.0);
 
 	}
 
@@ -94,7 +106,7 @@ public class InMemoryCacheDaoImplementationTest {
 		impl.fillPricingData("AAA", "B1", 2367);
 		impl.fillPricingData("AAA", "B1", 2376);
 
-		assertEquals(2376.0, impl.getPricing("AAA"), 0.0);
+		assertEquals(2376.0, getPricingValue(), 0.0);
 	}
 
 	@BeforeClass
@@ -105,5 +117,11 @@ public class InMemoryCacheDaoImplementationTest {
 	@AfterClass
 	public static void after() {
 
+	}
+
+	private double getPricingValue() {
+		double pricingValue = impl.getPricing("AAA");
+		System.out.println("Pricing Value is " + pricingValue);
+		return pricingValue;
 	}
 }

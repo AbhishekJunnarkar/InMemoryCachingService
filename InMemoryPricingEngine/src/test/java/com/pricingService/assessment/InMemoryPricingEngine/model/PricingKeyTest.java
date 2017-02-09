@@ -29,7 +29,7 @@ public class PricingKeyTest {
 		assertEquals(pricingKeyExpectedInstance, pricingKeyActualInstance);
 	}
 	@Test
-	public void testHashCode() {
+	public void testHashCode() {	
 
 		assertTrue(pricingKeyExpectedInstance.hashCode() == pricingKeyActualInstance.hashCode());
 	}	
